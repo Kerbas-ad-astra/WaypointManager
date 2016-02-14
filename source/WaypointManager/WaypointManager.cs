@@ -15,7 +15,7 @@ namespace WaypointManager
     [KSPAddon(KSPAddon.Startup.SpaceCentre, true)]
     class WaypointManager : MonoBehaviour
     {
-        private const float GUI_WIDTH = 360;
+        private const float GUI_WIDTH = 380;
         private const float SETTINGS_WIDTH = 280;
 
         public static WaypointManager Instance;
@@ -380,7 +380,7 @@ namespace WaypointManager
 
             if (Config.displayMode == Config.DisplayMode.CONTRACT)
             {
-                foreach (WaypointData.ContractContainer cc in WaypointData.WaypointByContracts)
+                foreach (WaypointData.ContractContainer cc in WaypointData.ContractContainers)
                 {
                     Contract c = cc.contract;
                     string title = (c != null ? c.Title : "No contract");
@@ -391,7 +391,7 @@ namespace WaypointManager
 
                     if (!cc.hidden)
                     {
-                        foreach (WaypointData wpd in cc.waypointByContract)
+                        foreach (WaypointData wpd in cc.waypointByContract.OrderBy(wp => wp.waypoint.name + wp.waypoint.index))
                         {
                             WaypointLineGUI(wpd);
                         }
@@ -412,7 +412,7 @@ namespace WaypointManager
 
                     if (!hidden)
                     {
-                        foreach (WaypointData wpd in pair.Value)
+                        foreach (WaypointData wpd in pair.Value.OrderBy(wp => wp.waypoint.name + wp.waypoint.index))
                         {
                             WaypointLineGUI(wpd);
                         }
@@ -432,7 +432,7 @@ namespace WaypointManager
             GUILayout.BeginHorizontal(GUILayout.Height(32));
 
             // Contract icon
-            GUILayout.Label(ContractIcon(wpd), GUILayout.ExpandWidth(false), GUILayout.Height(38));
+            GUILayout.Label(ContractIcon(wpd), GUILayout.ExpandWidth(false), GUILayout.Height(38), GUILayout.Width(38));
             GUILayout.Space(2);
             
             // Celestial body icon
@@ -441,16 +441,25 @@ namespace WaypointManager
 
             GUILayout.BeginVertical();
 
-            // Waypoint name
+            // Waypoint name, distance
+            GUILayout.BeginHorizontal();
             string name = wpd.waypoint.name;
             if (wpd.waypoint.isClustered)
             {
                 name += " " + StringUtilities.IntegerToGreek(wpd.waypoint.index);
             }
-            GUILayout.Label(name, labelStyle, GUILayout.Height(16), GUILayout.ExpandWidth(false));
+            GUILayout.Label(name, labelStyle, GUILayout.Height(16), GUILayout.Width(GUI_WIDTH - 240), GUILayout.ExpandWidth(false));
+            if (FlightGlobals.currentMainBody == wpd.celestialBody)
+            {
+                GUILayout.Label("Dist: " + Util.PrintDistance(wpd), labelStyle, GUILayout.Height(16), GUILayout.ExpandWidth(false));
+            }
+            GUILayout.EndHorizontal();
 
-            // Waypoint distance
-            GUILayout.Label("Distance: " + Util.PrintDistance(wpd), labelStyle, GUILayout.Height(16), GUILayout.ExpandWidth(false));
+            // Waypoint location
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Lat: " + Util.FormatCoordinate(wpd.waypoint.latitude, true), labelStyle, GUILayout.Height(16), GUILayout.Width(GUI_WIDTH / 2.0f - 72.0f), GUILayout.ExpandWidth(false));
+            GUILayout.Label("Lon: " + Util.FormatCoordinate(wpd.waypoint.longitude, false), labelStyle, GUILayout.Height(16), GUILayout.ExpandWidth(false));
+            GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
             GUILayout.FlexibleSpace();
@@ -573,6 +582,18 @@ namespace WaypointManager
             {
                 Config.hudAngle = !Config.hudAngle;
             }
+
+            // Display style
+            GUILayout.Label("Location display style", headingStyle);
+            if (GUILayout.Toggle(!Config.displayDecimal, "Degrees/Minutes/Seconds") == Config.displayDecimal)
+            {
+                Config.displayDecimal = false;
+            }
+            if (GUILayout.Toggle(Config.displayDecimal, "Decimal") != Config.displayDecimal)
+            {
+                Config.displayDecimal = true;
+            }
+
 
             // Toolbar
             GUILayout.Label("Toolbar Display", headingStyle);
