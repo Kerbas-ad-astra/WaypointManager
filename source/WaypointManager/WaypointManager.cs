@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using UnityEngine;
 using KSP;
+using KSP.UI.Screens;
 using Contracts;
 using FinePrint;
 using FinePrint.Utilities;
@@ -429,6 +430,11 @@ namespace WaypointManager
 
         protected void WaypointLineGUI(WaypointData wpd)
         {
+            if (!wpd.waypoint.visible)
+            {
+                return;
+            }
+
             GUILayout.BeginHorizontal(GUILayout.Height(32));
 
             // Contract icon
@@ -491,12 +497,13 @@ namespace WaypointManager
             {
                 if (isNavPoint)
                 {
-                    FinePrint.WaypointManager.clearNavPoint();
+                    NavWaypoint.fetch.Clear();
+                    NavWaypoint.fetch.Deactivate();
                 }
                 else
                 {
-                    FinePrint.WaypointManager.setupNavPoint(wpd.waypoint);
-                    FinePrint.WaypointManager.activateNavPoint();
+                    NavWaypoint.fetch.Setup(wpd.waypoint);
+                    NavWaypoint.fetch.Activate();
                 }
             }
             GUILayout.EndVertical();
@@ -739,7 +746,7 @@ namespace WaypointManager
             }
             else if (FinePrint.WaypointManager.Instance() != null)
             {
-                foreach (Waypoint wp in FinePrint.WaypointManager.Instance().AllWaypoints())
+                foreach (Waypoint wp in FinePrint.WaypointManager.Instance().Waypoints)
                 {
                     yield return wp;
                 }

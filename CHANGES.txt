@@ -1,3 +1,16 @@
+Waypoint Manager 2.5.3
+- KSP 1.1.3 compatibility.
+
+Waypoint Manager 2.5.2
+- Remove waypoints from the waypoint list when they no longer active (thanks severedsolo).
+- Move config file to PluginData to prevent unneccessesary Module Manager cache rebuilds (thanks galenmacil).
+
+Waypoint Manager 2.5.1
+- KSP 1.1.1 update (for CKAN).
+
+Waypoint Manager 2.5.0
+- Recompile for KSP 1.1
+
 Waypoint Manager 2.4.5
 - Add option to show waypoint location in decimal.
 - Fixed issue with contract info getting duplicated (thanks smjjames).
