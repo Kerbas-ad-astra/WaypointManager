@@ -16,6 +16,8 @@ namespace WaypointManager
     [KSPAddon(KSPAddon.Startup.SpaceCentre, true)]
     class WaypointManager : MonoBehaviour
     {
+        static List<Waypoint> uniqueWaypoints = new List<Waypoint>();
+
         private const float GUI_WIDTH = 380;
         private const float SETTINGS_WIDTH = 280;
 
@@ -196,22 +198,6 @@ namespace WaypointManager
                 }
             }
 
-            // Get all the directories for icons
-            ConfigNode[] iconConfig = GameDatabase.Instance.GetConfigNodes("WAYPOINT_MANAGER_ICONS");
-            foreach (ConfigNode configNode in iconConfig)
-            {
-                string dir = configNode.GetValue("url");
-                Debug.Log("handling dir = " + dir);
-
-                // The FinePrint logic is such that it will only look in Squad/Contracts/Icons for icons.
-                // Cheat this by hacking the path in the game database.
-                foreach (GameDatabase.TextureInfo texInfo in GameDatabase.Instance.databaseTexture.Where(t => t.name.StartsWith(dir)))
-                {
-                    Debug.Log("handling text = " + texInfo.name);
-                    texInfo.name = "Squad/Contracts/Icons/" + texInfo.name;
-                }
-            }
-
             // Extra stuff!
             GameDatabase.TextureInfo nyan = GameDatabase.Instance.databaseTexture.Where(t => t.name.Contains("WaypointManager/icons/Special/nyan")).FirstOrDefault();
             if (nyan != null && DateTime.Now.Month == 4 && DateTime.Now.Day == 1)
@@ -383,9 +369,7 @@ namespace WaypointManager
             {
                 foreach (WaypointData.ContractContainer cc in WaypointData.ContractContainers)
                 {
-                    Contract c = cc.contract;
-                    string title = (c != null ? c.Title : "No contract");
-                    if (GUILayout.Button(title, headerButtonStyle, GUILayout.MaxWidth(GUI_WIDTH - 24.0f)))
+                    if (GUILayout.Button(cc.title, headerButtonStyle, GUILayout.MaxWidth(GUI_WIDTH - 24.0f)))
                     {
                         cc.hidden = !cc.hidden;
                     }
@@ -603,17 +587,20 @@ namespace WaypointManager
 
 
             // Toolbar
-            GUILayout.Label("Toolbar Display", headingStyle);
-            if (GUILayout.Toggle(Config.useStockToolbar, "Show icon in stock toolbar") != Config.useStockToolbar)
+            if (ToolbarManager.ToolbarAvailable)
             {
-                Config.useStockToolbar = !Config.useStockToolbar;
-                if (Config.useStockToolbar)
+                GUILayout.Label("Toolbar Display", headingStyle);
+                if (GUILayout.Toggle(Config.useStockToolbar, "Show icon in stock toolbar") != Config.useStockToolbar)
                 {
-                    SetupToolbar();
-                }
-                else
-                {
-                    TeardownToolbar(GameScenes.FLIGHT);
+                    Config.useStockToolbar = !Config.useStockToolbar;
+                    if (Config.useStockToolbar)
+                    {
+                        SetupToolbar();
+                    }
+                    else
+                    {
+                        TeardownToolbar(GameScenes.FLIGHT);
+                    }
                 }
             }
 

@@ -1,3 +1,43 @@
+Waypoint Manager 2.8.1
+- Correctly increment assembly version.
+
+Waypoint Manager 2.8.0
+- Recompile for KSP 1.8.0
+- Fixed NRE when changing scenes (thanks DomiKamu).
+- Workaround for minor stock bug - the Dessert Airfield has the wrong icon (thanks Jacke4913).
+
+Waypoint Manager 2.7.5
+- Recompile for KSP 1.6.1
+- Group auto-generated site waypoints separately from custom waypoints.
+- Make waypoint data visible in IVA (thanks taniwha).
+- Workaround stock bug that causes the launch site waypoints to be added in duplicate on each scene change (thanks catonthekbd).
+
+Waypoint Manager 2.7.4
+- Fix version file.
+
+Waypoint Manager 2.7.3
+- Recompile for KSP 1.5.0.
+
+Waypoint Manager 2.7.2
+- Re-release properly for CKAN.
+
+Waypoint Manager 2.7.1
+- Recompile for KSP 1.4.0
+- Fixed NRE when importing custom waypoints before stock waypoint manager is loaded (thanks linuxgurugamer).
+
+Waypoint Manager 2.7.0
+- Recompile for KSP 1.3.0.
+- Don't allow stock toolbar icon to be disabled if Blizzy's toolbar isn't installed.
+
+Waypoint Manager 2.6.2
+- Removed code for drawing waypoint markers when not in career mode - as of KSP 1.2 stock draws those markers (thanks Syntax).
+
+Waypoint Manager 2.6.1
+- Remove hack for custom waypoint icons (no longer needed in KSP 1.2).
+- Move custom waypoints into PluginData directory.
+- Added back duplicate checking for custom waypoints (thanks Syntax).
+- Fixed custom waypoint icons not showing up (thanks Syntax).
+
 Waypoint Manager 2.6.0
 - KSP 1.2 compatibility.
 
